@@ -7,9 +7,10 @@ import Spinner from "../Spinner";
 const NotesOverview = () => {
   const { notes, isFetchingNotes, getNotes } = useContext(NotesContext);
   const { user } = useContext(UserContext);
+
   useEffect(() => {
     user && getNotes();
-  }, []);
+  }, [user]);
 
   return (
     <div className="flex flex-col max-w-sm mx-auto space-y-2 py-4 px-4">

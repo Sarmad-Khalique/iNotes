@@ -6,11 +6,9 @@ import RootProvider from "./context/rootProvider";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <Router>
-      <RootProvider>
-        <App />
-      </RootProvider>
-    </Router>
-  </React.StrictMode>
+  <Router>
+    <RootProvider>
+      <App />
+    </RootProvider>
+  </Router>
 );

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { UserContext } from "../../context/providers/user/userContext.provider";
 import Spinner from "../Spinner";
 
@@ -12,7 +12,6 @@ const Login = () => {
   });
 
   const { loginUser, isFetchingUser, user } = useContext(UserContext);
-
   // Redirecting user if already logged in
   useEffect(() => {
     !isFetchingUser && user && history.push("/");
@@ -45,6 +44,7 @@ const Login = () => {
               name="username"
               type="username"
               onChange={handleChange}
+              required
               className="bg-slate-700 my-2 text-white outline-none p-2 focus:ring-1 focus:ring-purple-500 rounded"
             />
             <label className="text-lg text-white font-normal">Password</label>
@@ -52,6 +52,7 @@ const Login = () => {
               name="password"
               type="password"
               onChange={handleChange}
+              required
               className="bg-slate-700 my-2 text-white outline-none p-2 focus:ring-1 focus:ring-purple-500 rounded"
             />
           </div>
@@ -63,6 +64,16 @@ const Login = () => {
           </button>
         </form>
       )}
+      <div className="text-white my-2 text-center">
+        Don't have an account? <br />
+        <Link
+          className="text-purple-700 font-bold cursor-pointer hover:underline active:underline hover:text-purple-800 active:text-purple-800"
+          to={"/register"}
+        >
+          Register
+        </Link>{" "}
+        now
+      </div>
     </div>
   );
 };
