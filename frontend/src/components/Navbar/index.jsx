@@ -8,7 +8,11 @@ import Drawer from "../Drawer";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
 
-  const { user, isFetchingUser, logoutUser } = useContext(UserContext);
+  const {
+    user,
+    handlingUserAuthentication: { isFetchingUser },
+    logoutUser,
+  } = useContext(UserContext);
 
   return (
     <>

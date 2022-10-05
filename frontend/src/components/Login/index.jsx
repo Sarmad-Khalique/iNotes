@@ -11,7 +11,11 @@ const Login = () => {
     password: "",
   });
 
-  const { loginUser, isFetchingUser, user } = useContext(UserContext);
+  const {
+    loginUser,
+    handlingUserAuthentication: { isFetchingUser },
+    user,
+  } = useContext(UserContext);
   // Redirecting user if already logged in
   useEffect(() => {
     !isFetchingUser && user && history.push("/");
@@ -39,7 +43,7 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="max-w-sm mx-auto">
           <h4 className="text-center text-white font-bold text-xl">Login</h4>
           <div className="flex flex-col w-full justify-center">
-            <label className="text-lg text-white font-normal">Email</label>
+            <label className="text-lg text-white font-normal">Username</label>
             <input
               name="username"
               type="username"

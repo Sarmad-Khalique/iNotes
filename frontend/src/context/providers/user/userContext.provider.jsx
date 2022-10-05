@@ -13,12 +13,19 @@ export const UserContext = createContext(INITIAL_STATE);
 
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [isFetchingUser, setIsFetchingUser] = useState(false);
+  const [handlingUserAuthentication, setHandlingUserAuthentication] = useState({
+    isFetchingUser: false,
+    isRegisteringUser: false,
+    userRegistered: false,
+  });
 
   const { notesCleanup } = useContext(NotesContext);
 
   const loginUser = ({ username, password }) => {
-    setIsFetchingUser(true);
+    setHandlingUserAuthentication({
+      ...handlingUserAuthentication,
+      isFetchingUser: true,
+    });
     axios
       .post("http://127.0.0.1:8000/api/customToken/", {
         username,
@@ -33,13 +40,57 @@ const UserProvider = ({ children }) => {
             email,
             is_active,
           });
-          setIsFetchingUser(false);
+          setHandlingUserAuthentication({
+            ...handlingUserAuthentication,
+            isFetchingUser: false,
+          });
         }
       })
       .catch((error) => {
         setUser(null);
-        setIsFetchingUser(false);
+        setHandlingUserAuthentication({
+          ...handlingUserAuthentication,
+          isFetchingUser: false,
+        });
         console.log(error);
+      });
+  };
+
+  const registerUser = ({
+    username,
+    email,
+    password,
+    first_name,
+    last_name,
+  }) => {
+    setHandlingUserAuthentication({
+      ...handlingUserAuthentication,
+      isRegisteringUser: true,
+      userRegistered: false,
+    });
+    axios
+      .post("http://127.0.0.1:8000/api/registerUser/", {
+        username,
+        password,
+        email,
+        first_name,
+        last_name,
+      })
+      .then((response) => {
+        response.status === 201 &&
+          setHandlingUserAuthentication({
+            ...handlingUserAuthentication,
+            isRegisteringUser: false,
+            userRegistered: true,
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+        setHandlingUserAuthentication({
+          ...handlingUserAuthentication,
+          isRegisteringUser: false,
+          userRegistered: false,
+        });
       });
   };
 
@@ -49,7 +100,10 @@ const UserProvider = ({ children }) => {
       JSON.parse(localStorage.getItem("tokens")) || {};
     // If access token is present in local storage then verify it
     if (access) {
-      setIsFetchingUser(true);
+      setHandlingUserAuthentication({
+        ...handlingUserAuthentication,
+        isFetchingUser: true,
+      });
       axios
         .post("http://127.0.0.1:8000/api/token/verify/", {
           token: access,
@@ -62,7 +116,10 @@ const UserProvider = ({ children }) => {
               email,
               is_active,
             });
-            setIsFetchingUser(false);
+            setHandlingUserAuthentication({
+              ...handlingUserAuthentication,
+              isFetchingUser: false,
+            });
           }
         })
         .catch((error) => {
@@ -74,8 +131,10 @@ const UserProvider = ({ children }) => {
             const isExpired = exp * 1000 - Date.now();
             // if refresh token is not expired then use it to get new tokens
             if (isExpired > 0) {
-              console.log(isExpired);
-              setIsFetchingUser(true);
+              setHandlingUserAuthentication({
+                ...handlingUserAuthentication,
+                isFetchingUser: true,
+              });
               axios
                 .post("http://127.0.0.1:8000/api/token/refresh/", {
                   refresh,
@@ -94,12 +153,18 @@ const UserProvider = ({ children }) => {
                       email,
                       is_active,
                     });
-                    setIsFetchingUser(false);
+                    setHandlingUserAuthentication({
+                      ...handlingUserAuthentication,
+                      isFetchingUser: false,
+                    });
                   }
                 })
                 .catch((error) => {
                   setUser(null);
-                  setIsFetchingUser(false);
+                  setHandlingUserAuthentication({
+                    ...handlingUserAuthentication,
+                    isFetchingUser: false,
+                  });
                   console.log(error);
                 });
             }
@@ -114,12 +179,22 @@ const UserProvider = ({ children }) => {
     setUser(null);
   };
 
+  const registerUserCleanup = () => {
+    setHandlingUserAuthentication({
+      ...handlingUserAuthentication,
+      isRegisteringUser: false,
+      userRegistered: false,
+    });
+  };
+
   const value = {
     user,
-    isFetchingUser,
+    handlingUserAuthentication,
     loginUser,
     checkUserSession,
     logoutUser,
+    registerUser,
+    registerUserCleanup,
   };
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

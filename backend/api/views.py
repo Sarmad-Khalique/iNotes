@@ -3,9 +3,10 @@ from rest_framework.permissions import IsAuthenticated
 
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from api.serializers import NotesSerializer, MyTokenObtainPairSerializer
-from notes.models import Notes
+from django.contrib.auth import get_user_model
 
+from api.serializers import NotesSerializer, MyTokenObtainPairSerializer, UserSerializer
+from notes.models import Notes
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
@@ -38,3 +39,15 @@ class NotesUpdateView(UpdateAPIView):
     permission_classes=(IsAuthenticated,)
     serializer_class = NotesSerializer
     queryset = Notes.objects.all()
+
+
+User = get_user_model()
+
+class UserCreateiew(CreateAPIView):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        instance.set_password(instance.password)
+        instance.save()

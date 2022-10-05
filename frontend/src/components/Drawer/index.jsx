@@ -3,7 +3,11 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../../context/providers/user/userContext.provider";
 
 const Drawer = ({ open, setOpen }) => {
-  const { user, isFetchingUser, logoutUser } = useContext(UserContext);
+  const {
+    user,
+    handlingUserAuthentication: { isFetchingUser },
+    logoutUser,
+  } = useContext(UserContext);
 
   // Disabling the scroll behaviour whenthe drawer is open
   useEffect(() => {

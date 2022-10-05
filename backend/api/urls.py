@@ -1,5 +1,5 @@
 from django.urls import path
-from api.views import GetAllNotesByUser, NotesCreateView, MyTokenObtainPairView, NotesDeleteView, NotesUpdateView
+from api.views import GetAllNotesByUser, NotesCreateView, MyTokenObtainPairView, NotesDeleteView, NotesUpdateView, UserCreateiew
 
 app_name = "notes"
 
@@ -9,4 +9,5 @@ urlpatterns = [
     path("deleteNotes/<int:pk>/", NotesDeleteView.as_view(), name="delete_user_notes"),
     path("updateNotes/<int:pk>/", NotesUpdateView.as_view(), name="update_user_notes"),
     path('customToken/', MyTokenObtainPairView.as_view(), name='custom_token_obtain_pair'),
+    path("registerUser/", UserCreateiew.as_view(), name="create_user_view")
 ]
